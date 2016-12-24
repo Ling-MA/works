@@ -1,0 +1,25 @@
+set PROD;
+param rendement{PROD};
+param consommation{PROD};
+param prix_vente{PROD};
+param vente_max{PROD};
+param area>=0;
+param prix_laitiers>=0;
+var qte_produite{p in PROD}>=0;
+var rende{p in PROD}>=0,<=vente_max[p];
+var varche integer >=0;
+
+maximize profit:
+(sum{p in PROD}rende[p]*prix_vente[p])+varche*prix_laitiers;
+subject to qte_reste{p in PROD}:
+rende[p]=rendement[p]*qte_produite[p]-consommation[p]*varche;
+subject to area_max:
+(sum{p in PROD}qte_produite[p])+varche*2<=area;
+data;
+param area:=200;
+param prix_laitiers:=200;
+set PROD:=betterave ble mais;
+param: rendement consommation vente_max prix_vente:=
+betterave 1     0.6 10  100
+ble       0.6   0.2 20  120
+mais       0.5  0.2 20  90;

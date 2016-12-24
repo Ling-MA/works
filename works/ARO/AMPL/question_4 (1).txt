@@ -1,0 +1,97 @@
+set PROD;#paramètre pour les légume,comme betterave, ble, mais
+set ANIM; #paramètre pour les varches et les moutons,comme animal
+
+
+#tous les NOUVEAU PARAMETRE
+param N integer>=0;#NOUVEAU paramètre pour certain an
+set ANNE:=2017 ..N;#NOUVEAU paramètre pour diffirente an
+param price{ANNE,ANIM}>=0;#NOUVEU paramètre de trois dimension pour price qui change selon an et diffirent animal
+var profita{ANNE,ANIM}>=0;#NOUVEAU variable pour savoir profit de chaque type d'animal qui change par an
+
+param rendement{PROD}>=0;#paramètre pour le rendement pour chaque légume,comme betterave, ble, mais
+param consommation{ANIM,PROD}>=0; #paramètre pour la comsommation de différent légume pour chaque animal 
+param prix_vente{PROD}>=0;#paramètre pour le prix de chaque légume
+param vente_max{PROD}>=0;#paramètre pour la quantité de vente maximum par chaque légume
+param area_max>=0;#paramètre pour la area utilisé maximum par chaque animal
+param loyer>=0; #paramètre pour loyer quand on loue un hangar
+param loue_max>=0;#paramètre de loyer quand on loue un hangar
+param max_anim{ANIM}integer>=0;#paramètre pour nombre de animal qui peut contient par chaque hangar
+param area_anim{ANIM}>=0;# paramètre pour nombre de area de chaque animal dont a besoin
+
+var qte_produite{ANNE,ANIM,PROD}>=0;#variable pour le nombre de chqaue légume pour chaque animal
+var rende{ANNE,a in ANIM,p in PROD}>=0,<=vente_max[p];#variable pour le rendement de chqaue légume pour chaque animal
+var animal{ANNE,a in ANIM}integer >=0;#variable pour le nombre de chaque animal
+var hangar_loue{ANNE,ANIM}integer>=0,<=loue_max;#variable pour le nomble de hangar à louer par chaque animal
+var hangar_anim{ANNE,ANIM} integer>=1;#variable pour le nomble de hangar à louer par chaque animal
+var surface{ANNE,ANIM}integer>=0,<=area_max;#variable pour le nomble de area  utilisé par chaque animal
+var etre_choisi{ANNE,ANIM}integer>=0;
+var etre_anne{ANNE}integer>=0;
+var profitx{2017..N-1,ANIM}>=0;
+
+maximize obj:
+(sum{p in PROD,n in ANNE,a in ANIM}rende[n,a,p]*prix_vente[p]*etre_choisi[n,a])
++sum{a in ANIM,n in ANNE}price[n,a]*animal[n,a]*etre_choisi[n,a]
++sum{n in ANNE, a in ANIM}loyer*hangar_loue[n,a]*etre_choisi[n,a];
+
+subject to profit{n in ANNE,a in ANIM}:#contrainte pour calculer le profit maximize par animale
+profita[n,a]=(sum{p in PROD}rende[n,a,p]*prix_vente[p])+price[n,a]*animal[n,a]+loyer*hangar_loue[n,a];
+
+
+subject to profitaaa{n in ANNE,a in ANIM}:
+profitx[n,a]=
+if animal[n,a]!=animal[n+1,a] and n<=N-1 then
+sum{p in PROD}(
+   rende[n,a,p]*prix_vente[p])+
+   price[n,a]*animal[N,a]+loyer*hangar_loue[n,a]+5000
+else
+ sum{p in PROD}(
+   rende[n,a,p]*prix_vente[p])+
+   price[n,a]*animal[N,a]+loyer*hangar_loue[n,a];
+   
+subject to choix :
+    (sum {a in ANIM,n in ANNE} etre_choisi [n,a]) = 1;
+
+subject to vim{n in ANNE,a in ANIM}:#contrainte pour fixer le nombre de hangar à louer ou utilisé par animal
+hangar_loue[n,a]=(loue_max-hangar_anim[n,a]);
+
+subject to hangar_max{n in ANNE,a in ANIM,p in PROD}:#contrainte pour fixer chaque animal peut avoir un place pour dormir
+hangar_anim[n,a]*max_anim[a]>=animal[n,a];
+
+subject to hangar_min{n in ANNE,a in ANIM,p in PROD}:#contrainte pour fixer que il y a pas de hangar sans louer ou sans utilisé pas animal;c'est à dit pas de hangar waste
+hangar_anim[n,a]*max_anim[a]-max_anim[a]<=animal[n,a]+1;
+
+
+subject to qte_reste{n in ANNE,p in PROD,a in ANIM}:#contrainte pour calculer le légume reste après manger par les animals
+rende[n,a,p]=rendement[p]*qte_produite[n,a,p]-consommation[a,p]*animal[n,a];
+
+subject to area{n in ANNE,a in ANIM}:#contrainte pour fixer le légume reste après manger par les animale au moins de 200  
+surface[n,a]=(sum{p in PROD}qte_produite[n,a,p])+animal[n,a]*area_anim[a];
+
+data;
+param area_max:=200;
+param loue_max:=5;
+param loyer:=1500;
+
+set PROD:=betterave ble mais;
+param: rendement vente_max prix_vente:=
+betterave 1    10  100
+ble       0.6   20  120
+mais      0.5   20  90;
+
+set ANIM:=varche mouton;
+param:  max_anim area_anim:=
+varche   20 2
+mouton   29 1;
+
+param N:=2021;
+param price :varche mouton:=
+2017        450         150
+2018        280         160
+2019        170         250
+2020        500         240
+2021        220         130;
+
+param consommation:
+         betterave ble mais:=
+varche 0.8 0.1 0.3
+mouton 0.6 0.2 0.2;

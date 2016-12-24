@@ -1,0 +1,70 @@
+set PROD; #paramètre pour les légume,comme betterave, ble, mais
+set ANIM; #paramètre pour les varches et les moutons,comme animal
+
+param rendement{PROD}>=0;  #paramètre pour le rendement pour chaque légume,comme betterave, ble, mais
+param consommation{ANIM,PROD}>=0;   #paramètre pour la comsommation de différent légume pour chaque animal 
+param prix_vente{PROD}>=0;  #paramètre pour le prix de chaque légume
+param vente_max{PROD}>=0;  #paramètre pour la quantité de vente maximum par chaque légume
+param area_max>=0;  #paramètre pour la area utilisé maximum par chaque animal
+param prix_produite{ANIM}>=0;  #paramètre pour le prix de chaque légume
+param loyer>=0;  #paramètre pour loyer quand on loue un hangar
+param loue_max>=0;  #paramètre de loyer quand on loue un hangar
+param max_anim{ANIM}integer>=0;  #paramètre pour nombre de animal qui peut contient par chaque hangar
+param area_anim{ANIM}>=0;  #paramètre pour nombre de area de chaque animal dont a besoin
+
+var qte_produite{ANIM,PROD}>=0;  #variable pour le nombre de chqaue légume pour chaque animal 
+var rende{a in ANIM,p in PROD}>=0,<=vente_max[p];  #variable pour le rendement de chqaue légume pour chaque animal
+var animal{a in ANIM}integer >=0; #variable pour le nombre de chaque animal
+var hangar_loue{ANIM}integer>=0,<=loue_max; #variable pour le nomble de hangar à louer par chaque animal
+var hangar_anim{ANIM} integer>=1; #variable pour le nomble de hangar à louer par chaque animal
+var surface{ANIM}integer>=0,<=area_max;  #variable pour le nomble de area  utilisé par chaque animal
+var profita{ANIM}>=0;#variable pour conserver le profit
+var etre_choisi{ANIM}integer>=0;
+
+
+maximize profit:#contrainte pour calculer le profit maximize par anima
+(sum{p in PROD,a in ANIM}rende[a,p]*prix_vente[p]*etre_choisi[a])+sum{a in ANIM}etre_choisi[a]*prix_produite[a]*animal[a]+sum{a in ANIM}etre_choisi[a]*loyer*hangar_loue[a];
+
+subject to profitdd{a in ANIM}:
+profita[a]=(sum{p in PROD}rende[a,p]*prix_vente[p])+prix_produite[a]*animal[a]+loyer*hangar_loue[a];
+
+subject to methode{a in ANIM}:#contrainte pour fixer le nombre de hangar à louer ou utilisé par animal
+hangar_loue[a]=(loue_max-hangar_anim[a]);
+
+subject to hangar_max{a in ANIM}:#contrainte pour fixer chaque animal peut avoir un place pour dormir
+hangar_anim[a]*max_anim[a]>=animal[a];
+
+subject to hangar_min{a in ANIM}:#contrainte pour fixer que il y a pas de hangar sans louer ou sans utilisé pas animal;c'est à dit pas de hangar waste
+hangar_anim[a]*max_anim[a]-max_anim[a]<=animal[a]+1;
+
+
+subject to qte_reste{p in PROD,a in ANIM}:#contrainte pour calculer le légume reste après manger par les animals
+rende[a,p]=rendement[p]*qte_produite[a,p]-consommation[a,p]*animal[a];
+
+subject to area{a in ANIM}:#contrainte pour fixer le légume reste après manger par les animale au moins de 200  
+surface[a]=(sum{p in PROD}qte_produite[a,p])+animal[a]*area_anim[a];
+
+subject to choix :
+    (sum {a in ANIM} etre_choisi [a]) = 1;
+
+data;
+param area_max:=200;
+param loue_max:=5;
+param loyer:=1500;
+
+set PROD:=betterave ble mais;
+param: rendement vente_max prix_vente:=
+betterave 1    10  100
+ble       0.6   20  120
+mais      0.5   20  90;
+
+set ANIM:=varche mouton;
+param: prix_produite max_anim area_anim:=
+varche   200  20 2      
+mouton   150  29 1;
+
+param consommation:
+         betterave ble mais:=
+varche 0.6 0.2 0.2
+mouton 0.8 0.1 0.3;
+
