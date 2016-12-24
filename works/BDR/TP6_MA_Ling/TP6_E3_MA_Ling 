@@ -1,0 +1,27 @@
+TP6_E1    MA LING
+2016.11.26
+E3 Graphe
+Q12 tous les edges.
+e(X,Y).
+
+Q13 tous les paires.
+p(X,Y).
+
+{                                           
+  longeur(a,c),
+  longeur(a,f),
+  longeur(b,d),
+  longeur(b,g),
+  longeur(c,a),
+  longeur(c,e),
+  longeur(d,b),
+  longeur(d,g),
+  longeur(e,f)
+}
+Info: 9 tuples computed.          
+
+
+Q14 difficle
+Q15 difficle
+Q16 impaire(X,Y).
+

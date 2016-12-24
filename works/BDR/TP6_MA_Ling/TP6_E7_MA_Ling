@@ -1,0 +1,39 @@
+TP6_E7    MA Ling
+2016/11/28
+Q25 (A or B) and (not B or C or not D) and (D or not E);
+
+bool(0).
+bool(1).
+
+p1(A,B,C,D,E) :- A=1,bool(A),bool(B),bool(C),bool(D),bool(E).
+p1(A,B,C,D,E) :- B=1,bool(A),bool(B),bool(C),bool(D),bool(E).
+
+p2(A,B,C,D,E) :- B=0,bool(A),bool(B),bool(C),bool(D),bool(E).
+p2(A,B,C,D,E) :- C=1,bool(A),bool(B),bool(C),bool(D),bool(E).
+p2(A,B,C,D,E) :- D=0,bool(A),bool(B),bool(C),bool(D),bool(E).
+
+p3(A,B,C,D,E) :- D=1,bool(A),bool(B),bool(C),bool(D),bool(E).
+p3(A,B,C,D,E) :- E=0,bool(A),bool(B),bool(C),bool(D),bool(E).
+
+r(A,B,C,D,E) :- p1(A,B,C,D,E),p2(A,B,C,D,E),p3(A,B,C,D,E).
+%-----------
+sat(A,B,C,D,E) :- r(A,B,C,D,E),bool(A),bool(B),bool(C),bool(D),bool(E).
+
+Mon resultat:
+14 tuples computed. 
+
+Q26 Quel est le pourcentage des solutions pour la formule précédente, parmis toutes les combinaisons
+de valeurs booléenes possibles ?
+on a 14 tuples,2^5=32,donc pourcentage(resultat)=14/32=43.75%
+
+Q27 A and(B or (D and E)) par CNF
+A and ((B or D) and (B or E))
+((A and B) or (A and D)) 
+and 
+((A and B) or(A and E))
+=>
+(A and B)or( A and B and E)
+or
+(A and D and B) or(A and D and E)
+=>
+

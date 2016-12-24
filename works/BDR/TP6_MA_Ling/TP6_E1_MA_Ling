@@ -1,0 +1,75 @@
+TP6_E1    MA LING
+2016.11.26
+
+femme(mia).
+femme(jody).
+femme(yolande).
+homme(vincent).
+homme(pierre).
+homme(marcellus).
+animal(lapin).
+animal(mon_chou).
+
+aime(vincent,mia).
+aime(vincent,pierre).
+aime(marcellus,mia).
+aime(mon_chou,lapin).
+aime(lapin,mon_chou).
+
+est_jaloux_de(X,Y) :- aime(X,Z),aime(Y,Z),Y\=X.
+
+E1 Jalousie
+Q4 mia,yolande sont femme, lapin n'est pas femme.
+femme(mia),femme(yolande),femme(lapin)
+{                                           
+}
+Info: 0 tuples computed.
+
+Q5 tous les noms de femmes
+/listing femme.
+
+femme(jody).
+femme(mia).
+femme(yolande).
+
+Info: 3 rules listed.
+
+
+Q6 tous les femmes vincent aime
+?- femme(X),listing(aime(vincent,X)).
+DES>femme(X),aime(vincent,X).
+answer(mia)
+
+
+Q7 tous les hommes vincent aime
+?-aime(vincent,X),homme(X).
+X = pierre.
+Info: Processing:
+  answer(X) :-
+    aime(vincent,X),
+    homme(X).
+{                                           
+  answer(pierre)
+}
+Info: 1 tuple computed. 
+
+Q8 ceux qui vincent est jaloux anonyme(tiret bas)
+est_jaloux_de(vincent,_).
+{                                           
+  answer
+}
+
+Info: 1 tuple computed.  
+
+
+Q9 ceux qui vincent est jaloux par variables
+DES>est_jaloux_de(vincent,X).
+{                                           
+  est_jaloux_de(vincent,marcellus)
+}
+Info: 1 tuple computed.       
+
+?-est_jaloux_de(vincent,X).
+X = marcellus 
+
+

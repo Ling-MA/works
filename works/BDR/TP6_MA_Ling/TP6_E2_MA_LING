@@ -1,0 +1,32 @@
+TP6_E2   MA LING
+2016.11.26
+
+E3 Graphe
+
+1.rende les noms de fournisseurs qui ont au moin de deux articles rouges
+
+deuxrouges(X,F1,F2,A1,A2):- fournisseurs(F1,X,_),fournisseurs(F2,_,_),catalogue(F1,A1,_),catalogue(F2,A2,_),articles(A1,_,'rouge'),articles(A2,_,'rouge'),A1\=A2,F1=F2.
+
+DES>deux(X,_,_,_,_).
+
+{                                           
+  answer('Big Red Tool and Die'),
+  answer(kiventout)
+}
+Info: 2 tuples computed.          
+
+
+2.rende les noms de fournisseurs qui ont d'articles à moin de dix euros
+
+bonmarche(F,X,P) :- fournisseurs(F,X,_),catalogue(F,_,P),P<10.
+
+DES>bonmarche(_,X,_).
+
+{                                           
+  answer('Big Red Tool and Die'),
+  answer('Perfunctory Parts'),
+  answer(kiventout)
+}
+Info: 3 tuples computed.  
+
+   

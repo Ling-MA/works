@@ -1,0 +1,54 @@
+TP2 E2  MA ling
+     4/10/2016
+#Q1 Trouver les noms et adresses de fournisseurs. Dans le résultat, renommez
+l’attribut ’fnom’ en ’fournisseur’, et ’fad’ en ’adresse’.
+SELECT fnom as fournisseur,fad as addresse from fournisseurs;
+
+#Q2 Quels fournisseurs offrent des articles entre 10 et 20 euros ?
+SELECT FID FROM CATALOGUE WHERE PRIX BETWEEN 10 AND 20;
+
+#Q3 Donner les noms d’articles rouges ou verts à moins de 20 euros.
+select anom from articles where acoul='rouge' union SELECT ANOM FROM ARTICLES WHERE AID IN (SELECT DISTINCT AID FROM CATALOGUE WHERE PRIX<20);
+
+#Q4 Déterminer le prix le plus haut du catalogue ainsi que le prix minimal.
+SELECT MAX(prix) FROM Catalogue union SELECT MIN(PRIX) FROM CATALOGUE;
+
+#Q5 Trouver les identifiants des fournisseurs qui fournissent aussi bien des articles
+rouges que des articles verts.
+select count(k.acoul='vert') from (select * from (select f1 from (select aid  from articles where acoul='rouge') as rouge join catalogue on rouge.aid=catalogue.aid intersect select f1 from (select aid from articles where acoul='vert') as vert join catalogue on vert.aid=catalogue.aid) as b join catalogue on b.f1=catalogue.fid join articles on catalogue.aid=articles.aid where acoul='rouge' or acoul='vert') as k group by (f1);
+
+
+#Q6Lister toutes les combinaisons possibles d’un article vert avec un article rouge(aid vert, aid rouge).
+select a.aid as vert, b.aid as rouge from (select aid from articles where acoul ='vert') as a,(select aid from articles where acoul='rouge') as b; 
+
+#Q7 : Trouver les noms des fournisseurs qui n’offrent ni des articles noirs, ni des
+articles argentés.
+1)select fnom, fad from fournisseurs where fid not in (select distinct fid from catalogue where aid in (select aid from articles where acoul='noir' or acoul='argente'));
+
+2)select fnom, fad from fournisseurs except select fnom, fad from fournisseurs where fid in (select distinct fid from catalogue where aid in (select aid from articles where acoul='noir' or acoul='argente'));
+
+#Q8 : Donnez les noms et adresses des fournisseurs proposant uniquement des
+articles à plus de 1000 euros.
+1)select fnom ,fad from fournisseurs where fid not in (select fid from catalogue where prix>1000);
+
+2)select fnom ,fad from fournisseurs except select fnom ,fad from fournisseurs where fid in (select fid from catalogue 
+where prix>1000);
+
+#Q9 : Faites afficher les aids du catalogue, sans doublons.
+select distinct aid from catalogue;
+
+#Q10 : Déterminer le nombre d’articles.
+select count(aid) from articles;
+
+#Q11 : Déterminer le nombre de lignes dans le catalogue.
+select count(fid) from catalogue;
+
+#Q12 : Déterminer le nombre d’articles fournissables.
+select aid from articles where aid not in(select distinct aid from catalogue where prix>0);
+
+#Q13 : Dans quels cas le nombre d’articles fournissables est-il égal au nombre de
+lignes du catalogue ? (Répondre avec une phrase en français).
+Toutes les articles qui ont aid ont un prix.
+
+#Q14 : Déterminer le nombre de couleurs d’articles.
+select count(distinct acoul) from articles;

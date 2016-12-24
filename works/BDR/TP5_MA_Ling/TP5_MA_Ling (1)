@@ -1,0 +1,63 @@
+MA_LING   TP5
+
+Q1:Pour chaque pilote certifié pour au moins deux avions, donnez l’eid et la portée
+maximale d’avion pour lesquels ce pilote est certifié.
+select distinct eid,a.portee as max from certifications c natural join avions a where exists (select * from certifications c1 where c.aid<>c1.aid and c.eid=c1.eid) and a.portee>=All(select a2.portee from certifications c2 natural join avions a2 where c2.eid=c.eid);
+
+Q2 : Déterminez les noms de pilotes dont le salaire est inférieur au prix du vol le moins
+cher de l’aéroport Paris-Charles de Gaulle (CDG) vers La Tontouta en Nouvelle Calédonie (NOU).
+select distinct e.enom from employes e natural join vols v1 where exists(select*from vols v where e.salaire<=all(select prix from vols v2 where v2.vid=v1.vid))and exists (select *from vols v3 where v3.dep='CDG'and v3.arr='NOU');
+
+Q3 : Quelles routes peuvent être volées par tous les pilotes gagnant > 100 000euros ? 2
+versions en SQL dont une avec ∃. Puis, en TRC, faites et rendez le 7 novembre sur papier l’exo
+tel que décrit dans le fichier TRC queries student.txt disponible sur Moodle.
+
+1)select distinct c.dep, c.arr,c.distance from ((select aid from avions a natural join vols v where a.portee>=v.distance)as b natural join certifications natural join employes)as foo natural join vols c where foo.salaire>100000;
+
+2)select distinct v.dep, v.arr,v.distance from vols v natural join avions a natural join certifications natural join employes e where exists (select aid from avions a natural join vols v where a.portee>=v.distance) and exists (select c.salaire from employes c where c.salaire>100000 and c.eid=e.eid);
+
+Q4 : Les noms des pilotes uniquement certifiés pour des avions de portée > 1500 km.
+Faites deux versions en SQL, l’une avec group by et EVERY, l’autre avec ∃. Faites également la
+version TRC, directement sur le fichier que vous rendrez avec votre TP.(il y a error dans results.txt)
+
+1)select distinct enom from (select aid from avions group by aid having every(portee>1500))as a natural join certifications natural join employes;
+
+2)select distinct enom from avions a natural join certifications c natural join employes e where exists (select a2.portee from avions a2 where portee>1500 and a.aid=a2.aid);
+
+
+Q5 : Affichez les noms des pilotes qui sont uniquement certifiés pour des avions avec une
+portée supérieure à 1500 km, pour au moins deux tels avions.
+
+select distinct enom from certifications c natural join employes natural join avions a where exists (select* from avions a2 where a2.portee>1500 and a.aid=a2.aid) and exists (select * from certifications c1 where c.aid<>c1.aid and c.eid=c1.eid) and not exists(select * from avions a1 where a1.portee<=1500 and a.aid=a1.aid);
+
+Q6 : Donnez les noms des pilotes qui sont certifiés uniquement pour des avions d’une
+portée supérieure à 1500 km, et qui sont certifiés pour au moins un type de Boeing.
+select distinct enom from employes natural join certifications natural join avions a where exists (select * from avions a1 where a1.portee>1500 and a1.aid=a.aid)  and  exists (select * from avions a2 where a2.anom like 'Boeing%')and not exists (select * from avions a2 where a2.portee<=1500 and a2.aid=a.aid) ;
+
+Q7 : Trouvez l’identifiant de l’employé avec le salaire le deuxième plus haut. N’utiliser ni
+limit, ni order by ! !
+select b.eid from employes b where b.salaire=(select s1.salaire from (select t.salaire from employes t where t.salaire<> (select salaire from employes e where e.salaire>=all(select e1.salaire from employes e1)))as s1 where s1.salaire>=all(select t1.salaire from employes t1 where t1.salaire<> (select e2.salaire from employes e2 where e2.salaire>=all(select e3.salaire from employes e3))));
+
+Q8 : Affichez les noms des pilotes qui peuvent piloter des avions d’une portée supérieure
+à 2000km, mais qui ne sont certifiés pour aucun Boeing.
+select distinct eid,enom from employes natural join avions natural join crtifications where portee>=2000 and anom not in ( select anom from avions where anom  like '%Boeing%');
+
+Q9 : Affichez les noms et revenus d’employés qui ne sont pas des pilotes, mais qui gagnent plus que le revenu moyen des pilotes.
+select eid from employes where salaire in (select t.salaire  from employes t where t.salaire>(select avg(c.salaire) from (select * from employes where eid in (select eid from certifications))as c)) and eid not in(select k.eid from certifications k);
+
+Q10 : Calculez la différence entre le revenu moyen de pilotes, et le revenu moyen de tous
+les employés (pilotes inclus).
+select (a.s1-b.s2) as diff from (select avg(salaire) as s1 from (select * from employes where eid  in (select eid from certifications)) as c )as a,(select avg(salaire)as s2 from employes)as b;
+
+
+Question 11 : Un client désire voyager de Madison à New York avec max deux escales. Donnez la
+liste des heures de départ à partir de Madison si le client veut arriver à New York avant 18h. 
+select v1.h_dep,v1.h_arr from vols v1 where dep='Madison' and exists(select *from vols v2  where v1.arr=v2.dep and v2.arr='New York') and h_arr in (select h_arr from vols where h_arr<='2016-04-12 18:00:00');
+
+Q12 : Est-il possible de prendre une séquence de vols de La Tantouta à Timbuktu ? Chaque
+vol de la séquence doit partir de la ville qui est l’arrivée du vol précédent. Le premier vol doit
+partir de La Tantouta, et le dernier vol doit arriver à Timbuktu. Il n’y a aucune contrainte sur le
+nombre d’escales. Votre requête doit être capable de déterminer si il existe une séquence allant de
+La Tantouta à Timbuktu, pour n’importe quelle instance de la relation vols. 
+DIFFICILE
+

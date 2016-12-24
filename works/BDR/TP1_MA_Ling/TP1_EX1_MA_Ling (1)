@@ -1,0 +1,46 @@
+TP1  MA ling
+     16/09/2016
+#Q1 Trouver les noms de founisseurs.
+project[fnom](FOURNISSEURS);
+
+#Q2 Tous les détails des fournisseurs parisiens.
+select[fad='Paris'](FOURNISSEURS);
+
+#Q3 Uniquement des noms des fournisseurs Paris.
+project[fnom](select[fad='Paris'](FOURNISSEURS));
+
+#Q4 Les noms des articles verts.
+project[anom](select[acoul='vert'](ARTICLES));
+
+#Q5 Les identifiants des arcticles à moins de 20 euros.
+project[aid](select[prix<20](CATALOGUE));
+
+#Q6 Trouver les identifiants de fournisseurs d'articles à moin de 20euro
+RA> project[fid](select[prix<20](CATALOGUE));
+
+
+#Q7.Quels fournisseurs offrent des articles entre 10 et 20 euros.
+RA> project[fid](select[prix>=10 and prix<=20](CATALOGUE));
+
+#Q8 les fournisseurs entre 10 euros et 20 euros, à l'aide de intersection.
+(project[fid](select[prix>=10](CATALOGUE)))intersect(project[fid](select[prix<=20](CATALOGUE)));
+
+
+#Q9 Les noms des articles verts ou rouges.
+RA> (project[anom](select[acoul='rouge'](ARTICLES)))union(project[anom](select[acoul='vert'](ARTICLES)));
+
+
+#Q10 la listes des articles rouges et verts.
+(project[anom](select[acoul='rouge'](ARTICLES)))intersect(project[anom](select[acoul='vert'](ARTICLES)));
+
+
+
+
+
+
+
+
+
+
+
+

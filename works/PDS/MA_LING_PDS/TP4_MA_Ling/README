@@ -1,0 +1,3 @@
+Bonjour monsieur,
+je ne comprends pas comment on peut screenshot dans terminal, je crois que vous nous demande ecrire -set term png et -set output "mcat_scd" dans test.sh, et on dois ecrire make mcat_scd ,et make test dans Makefile. C'est tous j'ai fait, mais le set "mcat.png" ne peut pas affichier automatiquement, donc je vous donne mon screenshot.....
+Ling

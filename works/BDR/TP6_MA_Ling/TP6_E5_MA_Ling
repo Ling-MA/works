@@ -1,0 +1,16 @@
+TP6_E5    MA LING
+2016.11.26
+E5 Princesses2
+
+Q.21
+contenu(tigre).
+contenu(princesse).
+Q22
+contenu(Y)->affiche_2(princesse,Y)
+contenu(X)->affiche_1(tigre,X)
+contenu(X)->affiche_1(X,princesse)
+affiche_1(X,Y) et affiche_2(X,Y)->solutions(X,Y)
+contenu(X) et contenu(Y) et not(affiche_1(X,Y)),not(affiche_2(X,Y))->alt_solution(X,Y).
+
+
+

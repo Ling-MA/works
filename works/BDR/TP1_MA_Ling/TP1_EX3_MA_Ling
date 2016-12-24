@@ -1,0 +1,43 @@
+TP1  MA Ling
+     17/09/2016
+#Q1 Enumerer les noms des articles fournisseurs, à l'aide d'une jointure naturelle et d'une projection.
+(project[anom]((select[acoul='vert'](ARTICLES))join(select[prix>10](CATALOGUE))join(FOURNISSEURS)));
+
+#Q2 La liste des articles fournisseurs, avec les prix auxquels ils sont offerts et le nom du fournisseurs correspondant.
+((project[anom](ARTICLES))times(project[prix](CATALOGUE))times(project[fnom](FOURNISSEURS)));
+
+#Q3 Les identifidants de fournisseurs des articles rouges.
+project[fid]((project[aid](select[acoul='rouge'](ARTICLES)))join(FOURNISSEURS));
+
+#Q4 Les noms des fournisseurs qui proposent des arcticles a moins de 20 euros.
+project[fnom]((project[fid](select[prix<20](CATALOGUE)))join(FOURNISSEURS));
+
+#Q5 Les identifiants des fournisseurs qui offrent uniquement des articles a plus de 10000 euros.
+((project[fid](select[prix>10000](CATALOGUE)))minus(project[fid](select[prix<=1000](CATALOGUE))));
+
+#Q6 Les noms et adresses des fournisseurs qui offrent uniquement des articles a plus de 10000 euros.
+project[fnom,fad]((project[fid](select[prix>10000](CATALOGUE)))join(FOURNISSEURS));
+
+#Q7 Les aid par une combinations d'articles verts et rouges.Combien?
+((project[aid](select[acoul='vert'](ARTICLES)))times(project[aid](select[acoul='rouge'](ARTICLES))));8;
+
+#Q8 Les aid d'articles ne peut pas etre commande chez aucun fornisseur?
+((project[aid](ARTICLES))minus(project[aid](select[prix>0](CATALOGUE))));
+temp3(AID:INTEGER)
+
+#Q9 Les anom et fad de Q8.
+project[anom](((project[aid](ARTICLES))minus(project[aid](select[prix>0](CATALOGUE))))join(ARTICLES));
+
+#Q10 Les fid qui ont aussi bien des articles rouges et verts.
+project[fid]((project[aid](select[aid=a3](rename[aid,a2,a3,a4](((project[aid](select[acoul='vert'](ARTICLES)))times(project[aid](select[acoul='rouge'](ARTICLES))))join(project[aid1](select[acoul1='vert'](rename[aid1,anom1,acoul1](ARTICLES))))times(project[aid1](select[acoul1='rouge'](rename[aid1,anom1,acoul1](ARTICLES))))))))join(CATALOGUE));
+
+#Q11 Les fnom d'articles noirs.
+project[fnom]((project[fid]((project[aid](select[acoul='noir'](ARTICLES)))join(CATALOGUE)))join(FOURNISSEURS));
+
+#Q12 Les aid etre fournis par plusieurs de fournisseurs.
+project[aid,fid](select[fid<>fid1 AND aid=aid1]((CATALOGUE)join(rename[fid1,aid1,prix1](CATALOGUE))));
+
+#Q13 Les fnom qui n'ont ni des articles noirs ni argentés.
+(((project[fnom](FOURNISSEURS))minus(project[fnom]((project[fid]((project[aid](select[acoul='noir'](ARTICLES)))join(CATALOGUE)))join(FOURNISSEURS))))intersect((project[fnom](FOURNISSEURS))minus(project[fnom]((project[fid]((project[aid](select[acoul='argente'](ARTICLES)))join(CATALOGUE)))join(FOURNISSEURS)))));
+
+

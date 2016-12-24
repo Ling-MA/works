@@ -1,0 +1,19 @@
+TP6  E6 MA_LING
+2016.11.27
+
+
+E6 Princesses3
+Q23.
+
+contenu(tigre).
+contenu(princesse).
+
+affiche_1(X,Y) :- X=princesse, Y=tigre.
+affiche_2(X,Y) :- X=tigre, Y=princesse.
+affiche_2(X,Y) :- X=princesse, Y=tigre.
+
+
+solutions(X,Y):- contenu(X),contenu(Y), affiche_1(X,Y),not(affiche_2(X,Y)).
+
+alt_solution(X,Y) :- contenu(X),contenu(Y),
+			  not(affiche_1(X,Y)), affiche_2(X,Y).

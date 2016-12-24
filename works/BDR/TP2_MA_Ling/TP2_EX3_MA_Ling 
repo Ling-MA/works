@@ -1,0 +1,21 @@
+TP2 E3 MA ling
+     4/10/2016
+
+#Q1 Donnez les identifiants de fournisseurs d’articles rouges.
+select fid from catalogue join articles on catalogue.aid=articles.aid where acoul='rouge';
+
+#Q2 Déterminer le prix moyen des articles rouges, arrondi au centime (postgres :
+ROUND). Utilisez différentes méthodes avec JOIN explicite, sans JOIN, avec des alias ou
+sans.
+select round(avg(prix),0) from catalogue where aid in(select aid from articles where acoul='rouge');
+
+#Q3 A l’aide d’une jointure externe : quels sont les fournisseurs n’offrant aucun
+article ?
+select distinct fournisseurs.fid from fournisseurs left join catalogue on fournisseurs.fid=catalogue.fid where aid is null;
+
+#Q4 A l’aide d’une jointure externe, déterminez les articles sans vendeur.
+select distinct articles.aid from Articles left join CAtalogue on articles.aid=catalogue.aid where catalogue.aid is null;
+
+#Q5 Déterminez les identifiants d’ articles sans vendeur avec une autre technique.
+select distinct articles.aid from Articles left join CAtalogue on articles.aid=catalogue.aid where catalogue.prix is null;
+

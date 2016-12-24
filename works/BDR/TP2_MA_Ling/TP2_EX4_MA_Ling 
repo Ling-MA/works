@@ -1,0 +1,24 @@
+TP2 E4  MA ling
+     4/10/2016
+#Q1 Affichez les noms des fournisseurs, en majuscules.
+select upper(fnom) from fournisseurs;
+
+#Q2 Pour le catalogue, affichez les identifiants de fournisseurs, d’articles, puis une colonne intitulée P RIX RON D avec le prix arrondi à l’Euro supérieur.
+select fid,aid,round(prix,0)
+
+#Q3 Donner les noms des fournisseurs parisiens.
+select fnom from fournisseurs where fad like '%Paris%';
+
+#Q4 : Affichez les noms des fournisseurs contenant aussi bien la lettre i que e, dans n’importe quel ordre, même si des nouveaux fournisseurs étaient ajoutés à la base.
+select fnom from fournisseurs where fnom like '%[i]%[e]%'||'%[e]%[i]%';
+
+#Q5 : Les fournisseurs dont le nom contient la lettre a (majuscule ou minuscule).
+Veillez à obtenir 5 résultats.
+select fnom from fournisseurs where lower(fnom) like '%a%';
+ Big Red Tool and Die
+ Perfunctory Parts
+ Alien Aircaft Inc.
+ Autolux
+ HappyCake
+(5 rows)
+

@@ -1,0 +1,38 @@
+TP6_E1    MA LING
+2016.11.26
+E4 SWIPL
+Q17\Q18
+swipl
+?-evite(X,Y).
+X = anne,
+Y = barbara ;
+X = barbara,
+Y = cecile ;
+X = cecile,
+Y = barbara ;
+X = anne,
+Y = cecile ;
+X = anne,
+Y = barbara ; <- Déjà obtenu
+X = anne,
+Y = cecile ;
+X = anne,
+Y = barbara ;
+X = anne,
+Y = cecile ; <- Arrêt avec ENTER
+
+DES> evite(X,Y)
+
+{                                           
+  evite(anne,barbara),
+  evite(anne,cecile),
+  evite(barbara,barbara),
+  evite(barbara,cecile),
+  evite(cecile,barbara),
+  evite(cecile,cecile)
+}
+Info: 6 tuples computed.     
+
+Q19
+
+

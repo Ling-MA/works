@@ -1,0 +1,60 @@
+#Q1 : Les couleurs rares, c.`a.d. pour lesquelles il n’y existe que un seul article (∃).
+select acoul as couleur from articles a where not exists(select * from articles a2 where a.acoul=a2.acoul and a.aid<>a2.aid);
+
+
+#Q2 : Articles rouges, qui n’existent pas en vert (faites trois requetes, une avec ∃,
+puis une avec A/S, puis une autre avec IN). Vous devez trouver deux tels articles, sur les
+quatres qui existent en rouge.
+
+1)select * from(select anom ,acoul from articles a1 where not exists(select *from articles a2 where a1.anom=a2.anom and a1.acoul<>a2.acoul)) as k where k.acoul='rouge';  
+2)select * from (select a.anom ,a.acoul from articles a where acoul<>some(select acoul from articles b where a.anom=b.anom))as a where a.acoul='rouge';
+3)select * from (select anom,acoul from articles a1 where a1.anom not in (select anom from articles a2 where a1.anom=a2.anom and a1.acoul<>a2.acoul))as t where t.acoul= 'rouge';
+
+
+#Q3 : Les noms des fournisseurs qui ont, pour une pi`ece, un prix sup´erieur `a la
+moyenne (moyennant sur tous les fournisseurs proposant cette piece).
+
+select fnom,aid from (select fid, aid from (select anom,avg(prix) as avg from catalogue natural join articles group by anom)as ap natural join articles natural join catalogue group by anom,prix,avg,aid,fid having articles.anom=ap.anom and catalogue.prix >ap.avg)as k natural join fournisseurs ;
+
+
+#Q4 : Articles offerts par au moins 2 fournisseurs diff´erents (∃).
+select distinct c.aid from catalogue c where exists(select c.fid from catalogue c2 where c2.fid<>c.fid and c2.aid=c.aid);
+
+
+#Q5 : Vendeur sans articles (IN, A/S).
+select fid from fournisseurs f where fid not in (select fid from fournisseurs where f.fid=some(select fid from catalogue));
+
+#Q6 : Les noms d’articles vendus par kiventout et personne d’autre.
+select anom from articles natural join (select aid from articles a natural join catalogue natural join fournisseurs f where f.fnom ='kiventout'and f.fid <>some (select fid from catalogue where a.aid=catalogue.aid))as a;
+
+#Q7 : Fournisseur proposant tous les articles (∃). Remarque : il s’agit justement
+de trouver requˆete sans passer par un groupage pour compter. Le point est d’exprimer un
+pour tous par la n´egation et il existe. Il faut exprimer l’id´ee : Je cherche un fournisseur tel
+qu’il n’y ait pas d’article non fournissable par lui.
+select fnom from fournisseurs where fid in (select fid from catalogue c1 where not exists (select*from catalogue c2 where c2.fid<>c1.fid and c1.aid=c2.aid))
+
+#Q8 : Le nom du fournisseur de l’article le plus cher (∃).
+select fnom from fournisseurs where fid in (select fid from catalogue where prix >= ALL(select prix from catalogue))
+
+#Q9 : Il faut trouver une requˆete ´equivalente, sans utiliser la clause HAVING (∃) :
+select anom,prix from articles natural join catalogue where prix in (select prix from catalogue where prix>= all(select prix from catalogue) or prix<= all(select prix from catalogue))
+
+#Q10 : Le nom du fournisseur offrant le mˆeme article en plus d’une couleur, et le
+nom de cet article (∃).
+select anom,fnom,acoul from articles a1 inner join catalogue on catalogue.aid=a1.aid inner join fournisseurs on fournisseurs.fid=catalogue.fid where exists(select * from articles a2 where a1.acoul<>a2.acoul and a1.anom<>a2.anom )
+
+#Q11 : Les noms des articles offerts par un seul fournisseur, toutes couleurs confondues
+(∃, group by).
+?
+
+#Q12:Articles coûtant au moins 100 euros, chez tous les vendeurs
+select prix, anom from articles join catalogue on catalogue.aid=articles.aid where prix<100
+
+#Q13:Articles (aid) disponibles uniquement aux États-Unis ( ∃).
+?
+#Q14:Fournisseur n’offrant que des articles rouges.
+select fnom from articles a1 inner join catalogue on catalogue.aid=a1.aid inner join fournisseurs f1 on f1.fid=catalogue.fid where a1.acoul='rouge' and not exists (select * from articles a2 inner join catalogue on catalogue.aid=a2.aid inner join fournisseurs f2 on f2.fid=catalogue.fid where a1.acoul<>a2.acoul and f1.fnom=f2.fnom)
+
+#Q15:Les noms des fournisseurs qui offrent tous les articles rouges.
+select distinct fid,count(fid) from (select fid from catalogue where aid in (select aid from articles where acoul='rouge'))as a group by fid having count(fid)>=4;
+

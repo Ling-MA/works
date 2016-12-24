@@ -1,0 +1,21 @@
+Readme
+*****************************************************************************************
+Ce programme ont trois fonctions:
+1) prilimit.c qui affichie les valeurs des constantes NAME_MAX et PATH_MAX;
+
+2) maccess.c qui permet de enter une commande (-r,-w,-x,-f) pour tester les 
+droits d'accès de maccess.c et (-v) nous propose une errer de"No such option.".
+
+3) maccess+.c qui utilise la méthode getopt() pour tester un fichier que nous
+importons.C'est un autre façon pour tester les drois d'accès.
+********************************************************************************************
+Comment on peut les tester:
+On entre le fichier TP1_MA_Ling.Si vous avez déjà les fichiers (maccess+,prlimit,maccess), on les
+remove d'abord.Ensuit on entre ($sh tests.sh) .Il peut executer automatiquement.Il va remove ses
+(maccess, prlimit,maccess+) automatiquement.
+********************************************************************************************
+
+
+
+
+MERCI

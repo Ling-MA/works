@@ -1,0 +1,61 @@
+TP2   MA ling
+     4/10/2016
+
+#Q12 Les aid etre fournis par plusieurs de fournisseurs.
+project[aid,fid](select[fid<>fid1 AND aid=aid1]((CATALOGUE)join(rename[fid1,aid1,prix1](CATALOGUE))));
+
+#Q13 Les fnom qui n'ont ni des articles noirs ni argentés.
+(((project[fnom](FOURNISSEURS))minus(project[fnom]((project[fid]((project[aid](select[acoul='noir'](ARTICLES)))join(CATALOGUE)))join(FOURNISSEURS))))intersect((project[fnom](FOURNISSEURS))minus(project[fnom]((project[fid]((project[aid](select[acoul='argente'](ARTICLES)))join(CATALOGUE)))join(FOURNISSEURS)))));
+
+
+
+E1
+#Q1.1 
+CREATE TABLE fournisseurs
+(
+  fid integer NOT NULL,
+  fnom VARCHAR(255),
+  fad VARCHAR(255),
+  PRIMARY KEY (fid)
+)
+
+CREATE TABLE public.articles
+(
+  aid integer NOT NULL,
+  anom VARCHAR(255),
+  acoul VARCHAR(255),
+  PRIMARY KEY (aid)
+)
+INSERT INTO Articles VALUES (1,'Left Handed Toaster Cover','rouge');
+
+CREATE TABLE catalogue
+(
+  fid integer NOT NULL,
+  aid integer NOT NULL,
+  prix numeric(8,2),
+ FOREIGN KEY (aid)
+      REFERENCES articles(aid)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+ FOREIGN KEY (fid)
+      REFERENCES fournisseurs(fid)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+ 
+)
+
+#Q1.6
+
+ALTER TABLE Persons
+ADD Birthday date
+
+ALTER TABLE Persons
+ALTER COLUMN Birthday year
+
+ALTER TABLE table_name
+ADD column_name datatype
+要删除表中的列，请使用下列语法：
+ALTER TABLE table_name 
+DROP COLUMN column_name
+注释：某些数据库系统不允许这种在数据库表中删除列的方式 (DROP COLUMN column_name)。
+要改变表中列的数据类型，请使用下列语法：
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype
